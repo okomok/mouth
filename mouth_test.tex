@@ -1,0 +1,281 @@
+\documentclass{article}
+\usepackage{mouth,amsmath,qstest}
+
+\begin{document}
+
+lambdax test:
+
+
+% Assertion
+\AssertEquals\NumEq2{\Assert{\NumEq11}{2}}
+\AssertTrue\True
+\AssertFalse\False
+\AssertEquals\NumEq22
+\AssertNotEquals\NumEq32
+\AssertEquals{\EqualWith\NumEq}{\List{1,2,4}}{\List{1,2,4}}
+\AssertNotEquals{\EqualWith\NumEq}{\List{1,2,4}}{\List{1,2,3}}
+
+
+% Bool test
+\AssertFalse{\Not\True}
+\AssertTrue{\Not\False}
+\AssertTrue{\Bool{\iftrue}}
+\AssertTrue{\Bool{\ifx\Identity\Identity}}
+\AssertFalse{\Bool{\ifx\Compose\Identity}}
+\AssertTrue{\Bool{\ifnum 3 < 4 }}
+\AssertFalse{\Bool{\ifnum 5 < 4 }}
+\AssertTrue{\Head{\Cons{\True}{\Nil}}}
+\AssertTrue{\Bool{\ifnum 3 = \Head{\List{3,2,1}} }}
+\AssertFalse{\Bool{\ifnum 2 = \Head{\List{3,2,1}} }}
+\AssertTrue{ \BoolAnd{\NumLess{3}{9}}{\True} }
+\AssertTrue{ \BoolOr{\True}{\True} }
+\AssertTrue{ \BoolOr{\False}{\True} }
+\AssertTrue{ \BoolOr{\True}{\False} }
+\AssertFalse{ \BoolOr{\False}{\False} }
+\AssertTrue{ \BoolAnd{\NumLess{3}{9}}{\True} }
+\AssertTrue{ \All{\NumLess{3}}{\List{4,5,6}} }
+\AssertTrue{\Null{\Nil}}
+\AssertFalse{\Null{\List{1,2}}}
+\AssertTrue{\NumToBool{3}}
+\AssertFalse{\NumToBool{0}}
+\begin{qstest}{Bool}{}
+    \Expect*{\BoolToNum{\True}}{1}
+    \Expect*{\BoolToNum{\False}}{0}
+\end{qstest}
+
+
+% \Unlist{\List{\Unlist{\List{1,2,3}}}}
+% $\to$
+% \List{\Unlist{\List{1,2,3}}}\Unlist@{}
+% $\to$
+% \Singleton{\Unlist{\List{1,2,3}}}\Unlist@{}
+% $\to$
+% \Cons{\Unlist{\List{1,2,3}}}\Nil\Unlist@{}
+% $\to$
+% \Unlist@{\Unlist{\List{1,2,3}}}\Nil
+% $\to$
+% \Unlist{\List{1,2,3}}\Foldr\PrependComma{}\Nil
+% $\to$
+% \List{1,2,3}\Unlist@{}\Foldr\PrependComma{}\Nil
+% $\to$
+% \Cons{1}{\Cons{2}{\Cons{3}\Nil}}\Unlist@{}\Foldr\PrependComma{}\Nil
+% $\to$
+% \Unlist@{1}{\Cons{2}{\Cons{3}\Nil}}\Foldr\PrependComma{}\Nil
+% $\to$
+% 1\Foldr\PrependComma{}{\Cons{2}{\Cons{3}\Nil}}\Foldr\PrependComma{}\Nil
+% $\to$
+% 1,2,3
+
+\begin{qstest}{List}{}
+    \Expect*{\Unlist{\List{1,2,3}}}{1,2,3}
+    \Expect*{\Unlist{\List{1,2 , 3}}}{1,2 , 3}
+    \Expect*{\Unlist{\List{1,2,{,}3}}}{1,2,{,}3}
+    \Expect*{\ListShow{\List{1,2,3}}}{[1,2,3]}
+% Works. See above. 
+    \Expect*{\Unlist{\List{\Unlist{\List{1,2,3}}}}}{1,2,3}
+    \Expect*{\Unlist{\List{\Unlist{\List{1,2}}}}}{1,2}
+    \Expect*{\Unlist{\List{\Unlist{\List{1}}}}}{1}
+    \Expect*{\Unlist{\List{\Unlist{\List1}}}}{1}
+    \Expect*{\Compose\Unlist\List{\Compose\Unlist\List{1,2,3}}}{1,2,3}
+    \Expect*{\Compose\Unlist\List{\Compose\Unlist\List{1,2}}}{1,2}
+    \Expect*{\Compose\Unlist\List{\Compose\Unlist\List{1}}}{1}
+    \Expect*{\Compose\Unlist\List{\Compose\Unlist\List1}}{1}
+\end{qstest}
+
+
+\begin{qstest}{Take}{}
+    \Expect*{\Unlist{\Take{3}{\List{1,2,3,4}}}}{1,2,3}
+    \Expect*{\Unlist{\Take{0}{\List{1,2,3,4}}}}{}
+\end{qstest}
+
+
+\begin{qstest}{Drop}{}
+    \Expect*{\Unlist{\Drop{2}{\List{1,2,3,4}}}}{3,4}
+    \Expect*{\Unlist{\Drop{0}{\List{1,2,3,4}}}}{1,2,3,4}
+    \Expect*{\Unlist{\Drop{7}{\List{1,2,3,4}}}}{}
+\end{qstest}
+
+
+\begin{qstest}{Iterate}{}
+    \newcommand*{\appendb}[1]{#1b}
+    \Expect*{\Unlist{\Take{4}{\Iterate{\appendb}{a}}}}{a,ab,abb,abbb}
+\end{qstest}
+
+Iterate Test: \Unlist{\Take{4}{\Iterate{\Proc{#1b}}{a}}} = a,ab,abb,abbb
+
+
+\begin{qstest}{TakeWhile}{}
+    \Expect*{\Unlist{\TakeWhile{\NumLess{3}}{\List{5,6,4,2,5,3,4}}}}{5,6,4}
+\end{qstest}
+
+
+\begin{qstest}{DropWhile}{}
+    \Expect*{\Unlist{\DropWhile{\NumLess{3}}{\List{5,6,4,2,5,3,4}}}}{2,5,3,4}
+\end{qstest}
+
+
+ProcCounter = \the\value{ProcCounter}
+
+
+\begin{qstest}{Pair}{}
+%    \edef\papa{\Unpair{\Pair{1}{2}}}
+    \newcommand*{\uncurryme}[2]{#1#2}
+    \Expect*{\Fst{\Pair{1}{2}}}{1}
+    \Expect*{\Snd{\Pair{1}{2}}}{2}
+    \Expect*{\Snd{\Swap{\Pair{1}{2}}}}{1}
+    \Expect*{\Fst{\Swap{\Pair{1}{2}}}}{2}
+    %\Expect*{\Unpair{\Pair12}}{12}
+%   \Expect*{\Unpair{\Pair{abc}{efg}}}{abcefg}
+%   \Expect*{\Unpair{\Pair{\Unpair{\Pair12}}}}{12}
+%   \Expect*{\Compose\Unpair{\Compose\Pair\Unpair}\Pair12}{12}
+    \Expect*{\Uncurry{\uncurryme}{\Pair{1}{2}}}{12}
+ %   \Expect*{\Fst{\expandafter\Pair\papa}}{1}
+%        \Expect*{\Unpair{\Pair{\Unpair{\Pair12}}}}{1,2}
+\end{qstest}
+\AssertEquals{\EqualWith\NumEq}{\List{1,2}}{\PairToList{\Pair{1}{2}}}
+
+
+\begin{qstest}{Zip}{}
+    \Expect*{%
+        \Unlist{\Map{\ShowPair}{\Zip{\List{1,2,3}}{\List{a,b,c,d}}}}%
+    }{(1,a),(2,b),(3,c)}
+    \Expect*{%
+        \Unlist{\Map{\ShowPair}{\Zip{\List{1,2,3,4}}{\List{a,b,c}}}}%
+    }{(1,a),(2,b),(3,c)}
+\end{qstest}
+
+
+% Unzip
+\AssertEquals{\EqualWith\NumEq}{\List{1,2,3}}{%
+    \Fst{\Unzip{\Zip{\List{1,2,3,4}}{\List{a,b,c}}}}%
+}
+
+
+% Init
+\AssertEquals{\EqualWith\NumEq}{\List{1,2}}{\Init{\List{1,2,3}}}
+
+
+\begin{qstest}{Nth}{}
+    \Expect*{\Nth{3}{\List{1,2,3,4,5}}}{4}
+    \Expect*{\Nth{0}{\List{1,2,3,4,5}}}{1}
+\end{qstest}
+
+
+\begin{qstest}{Last}{}
+    \Expect*{\Last{\List{1,2,3,4,5}}}{5}
+    \Expect*{\Last{\List{1}}}{1}
+\end{qstest}
+
+
+\begin{qstest}{Length}{}
+    \Expect*{\Length{\List{1,2,3}}}{3}
+    \Expect*{\Length{\Nil}}{0}
+\end{qstest}
+
+
+% EqualWith
+\newcommand*{\alwaystrue}[2]{\True}
+\newcommand*{\alwaysfalse}[2]{\False}
+\AssertEquals{\EqualWith\NumEq}{\List{1,2,3}}{\List{1,2,3}}
+\AssertEquals{\EqualWith\alwaystrue}\Nil\Nil
+\AssertEquals{\EqualWith\alwaysfalse}\Nil\Nil
+\AssertNotEquals{\EqualWith\NumEq}{\List{1,2}}{\List{1,2,3}}
+\AssertNotEquals{\EqualWith\NumEq}{\List{1,2}}{\List{1,2,3}}
+\AssertNotEquals{\EqualWith\NumEq}{\List{1,2,3}}{\List{1,2}}
+\AssertNotEquals{\EqualWith\NumEq}{\Nil}{\List{1,2}}
+\AssertNotEquals{\EqualWith\NumEq}{\List{1,2,3}}{\Nil}
+\AssertNotEquals{\EqualWith\NumEq}{\List{1,2,3}}{\List{1,2,2}}
+
+
+% Foreach
+\begin{qstest}{Foreach}{}
+%    \Expect*{\Foreach{\List{1,2,3}}{#1}}{123}
+\end{qstest}
+\Foreach{\List{1,2,3}}{#1} = 123
+
+
+% Unfoldr
+\newcommand*{\FibImpl}[1]{\Just{\Pair{\Fst{#1}}{\Pair{\Snd{#1}}{\NumPlus{\Fst{#1}}{\Snd{#1}}}}}}
+\newcommand*{\Fibs}{\Unfoldr\FibImpl{\Pair{0}{1}}}
+\newcommand*{\MyIterImpl}[2]{\Just{\Pair{#2}{#1{#2}}}}
+\newcommand*{\MyIter}[1]{\Unfoldr{\MyIterImpl{#1}}}
+\AssertEquals{\EqualWith\NumEq}{\List{0,1,1,2,3,5,8,13}}{\Take8\Fibs}
+\AssertEquals{\EqualWith\NumEq}{\List{3,4,5}}{\Take3{\MyIter\NumInc3}}
+
+
+% Concat
+\AssertEquals{\EqualWith\NumEq}{\List{1,2,3,4,5,6}}{\Concat{\List{\List{1},\List{2,3},\Nil,\List{4,5,6}}}}
+\AssertEquals{\EqualWith\NumEq}{\List{1,2,3,4,5,6}}{\ConcatMap\Id{\List{\List{1},\List{2,3},\Nil,\List{4,5,6}}}}
+
+
+% Maybe
+\begin{qstest}{Maybe}{}
+    \Expect*{\FromJust{\Just{3}}}{3}
+    \Expect*{\FromJust{\ListToMaybe{\List{1}}}}{1}
+    \Expect*{\FromJust{\ListToMaybe{\List{1,2}}}}{1}
+\end{qstest}
+\AssertTrue{\IsJust{\Just{3}}}
+\AssertFalse{\IsJust{\Nothing}}
+\AssertFalse{\IsNothing{\Just{3}}}
+\AssertTrue{\IsNothing{\Nothing}}
+\AssertTrue{\IsNothing{\ListToMaybe\Nil}}
+\AssertEquals{\EqualWith\NumEq}{\List{3}}{\MaybeToList{\Just{3}}}
+\AssertEquals{\EqualWith\NumEq}\Nil{\MaybeToList{\Nothing}}
+%\FromJust\Nothing
+
+
+\begin{qstest}{Arithmetic}{}
+    \Expect*{\NumPlus{0}{0}}{0}
+    \Expect*{\NumPlus{0}{3}}{3}
+    \Expect*{\NumPlus{3}{0}}{3}
+    \Expect*{\NumPlus{2}{3}}{5}
+    \Expect*{\NumMinus{3}{0}}{3}
+    \Expect*{\NumMinus{3}{1}}{2}
+    \Expect*{\NumMinus{3}{3}}{0}
+    \Expect*{\NumMult{3}{2}}{6}
+    \Expect*{\NumMult{3}{4}}{12}
+    \Expect*{\NumMult{1}{2}}{2}
+    \Expect*{\NumMult{0}{2}}{0}
+    \Expect*{\NumMult{2}{0}}{0}
+    \Expect*{\NumMult{0}{0}}{0}
+\end{qstest}
+
+\newcommand*{\FixImpl}[2]{%
+    \If{\BoolOr{\Bool{\ifnum#2=0 }}{\Bool{\ifnum#2=1 }}}{%
+        1%
+    }{%
+        \NumPlus{#1{\NumMinus{#2}{1}}}{#1{\NumMinus{#2}{2}}}%
+    }%
+}
+
+\begin{qstest}{Fix}{}
+    \Expect*{\Fix\FixImpl{6}}{13}
+\end{qstest}
+
+% Scanl/r
+\AssertEquals{\EqualWith\NumEq}\Nil{\ScanlI\NumPlus\Nil}
+\AssertEquals{\EqualWith\NumEq}{\List{1,3,6,10}}{\ScanlI\NumPlus{\List{1,2,3,4}}}
+\AssertEquals{\EqualWith\NumEq}{\List{15,14,12,9,5}}{\Scanr\NumPlus{5}{\List{1,2,3,4}}}
+\AssertEquals{\EqualWith\NumEq}{\List{10,9,7,4}}{\ScanrI\NumPlus{\List{1,2,3,4}}}
+\AssertEquals{\EqualWith\NumEq}\Nil{\ScanrI\NumPlus\Nil}
+
+\begin{qstest}{Inits and Tails}{}
+    \Expect*{\ListsShow{\Inits{\List{1,3,5}}}}{[[],[1],[1,3],[1,3,5]]}
+    \Expect*{\ListsShow{\Tails{\List{1,3,5}}}}{[[1,3,5],[3,5],[5],[]]}
+\end{qstest}
+%\ShowList{\Map\ShowList{\List{\List{1,2},\List{2,3},\List{5}}}}
+
+
+% Local
+\Local{x1,y2}{
+    \AssertTrue{\NumEq{\x}{1}}
+    \AssertFalse{\NumEq{\x}{2}}
+    \AssertTrue{\NumEq{\y}{2}}
+    \AssertFalse{\NumEq{\y}{3}}
+}
+\AssertFalse{\ifdef{\x}}
+\AssertFalse{\ifcsdef{x}}
+\AssertFalse{\ifcsdef{y}}
+
+
+\end{document}
