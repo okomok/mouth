@@ -93,7 +93,7 @@
 \newcommand*{\Expand}{\Intercalate{}}
 \newcommand*{\Intercalate}[2]{#2{\Intercalate@{#1}}{}}
 \newcommand*{\Intercalate@}[2]{#2\Foldr{\ExpandIII{#1}}{}}
-\newcommand*{\ListShow}[1]{[\Unlist{#1}]}% no spaces
+\newcommand*{\ListShow}[1]{\{\Unlist{#1}\}}% no spaces
 \newcommand*{\ListsShow}[1]{\ListShow{\Map\ListShow{#1}}}
 
 \newcommand*{\List}[1]{\List@#1,\Listend@\@eolst}% only works for nonempty lists.
@@ -298,9 +298,6 @@
 \newcommand*{\EnvBrack}[3]{\begin{#1}[#2]#3\end{#1}}
 \newcommand*{\EnvBrace}[3]{\begin{#1}{#2}#3\end{#1}}
 \newcommand*{\EnvList}[2]{\Foldr\Env{#2}{\List{#1}}}
-
-\newcommand*{\InList}[2]{\Foldr\In{#2}{\List{#1}}}% @deprecated, renamed to EnvList
-\newcommand*{\In}[2]{\begin{#1}#2\end{#1}}% @deprecated, renamed to Env
 
 \newcommand*{\Math}{\Env{math}}% no ensuremath
 \newcommand*{\DisplayMath}{\Env{displaymath}}
