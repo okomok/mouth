@@ -254,7 +254,7 @@
     \ProcNamed@{Proc\the\value{ProcCounter}}%
 }
 \newcommand*{\ProcNamed@}[2]{%
-    \expandafter\newcommand\csname#1\endcsname[1]{#2}\csuse{#1}%
+    \expandafter\newcommand\csname #1\endcsname[1]{#2}\csuse{#1}%
 }
 
 
@@ -271,10 +271,10 @@
     \UnletI@#1%
 }
 \newcommand*{\LocalI@}[2]{%
-    \expandafter\def\csname#1\endcsname{#2}%
+    \expandafter\def\csname #1\endcsname{#2}%
 }
 \newcommand*{\UnletI@}[2]{%
-    \expandafter\let\csname#1\endcsname\@undefined%
+    \expandafter\let\csname #1\endcsname\@undefined%
 }
 \newcommand*{\Local}[2]{\Foldr\LocalI{#2}{\List{#1}}}
 
