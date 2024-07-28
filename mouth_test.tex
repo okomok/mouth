@@ -70,7 +70,7 @@ mouth test:
     \Expect*{\Unlist{\List{1,2,3}}}{1,2,3}
     \Expect*{\Unlist{\List{1,2 , 3}}}{1,2 , 3}
     \Expect*{\Unlist{\List{1,2,{,}3}}}{1,2,{,}3}
-    \Expect*{\ListShow{\List{1,2,3}}}{[1,2,3]}
+    \Expect*{\ShowList{\List{1,2,3}}}{[1,2,3]}
 % Works. See above. 
     \Expect*{\Unlist{\List{\Unlist{\List{1,2,3}}}}}{1,2,3}
     \Expect*{\Unlist{\List{\Unlist{\List{1,2}}}}}{1,2}
@@ -261,8 +261,8 @@ ProcCounter = \the\value{ProcCounter}
 \AssertEquals{\EqualWith\NumEq}\Nil{\ScanrI\NumPlus\Nil}
 
 \begin{qstest}{Inits and Tails}{}
-    \Expect*{\ListsShow{\Inits{\List{1,3,5}}}}{[[],[1],[1,3],[1,3,5]]}
-    \Expect*{\ListsShow{\Tails{\List{1,3,5}}}}{[[1,3,5],[3,5],[5],[]]}
+    \Expect*{\ShowLists{\Inits{\List{1,3,5}}}}{[[],[1],[1,3],[1,3,5]]}
+    \Expect*{\ShowLists{\Tails{\List{1,3,5}}}}{[[1,3,5],[3,5],[5],[]]}
 \end{qstest}
 %\ShowList{\Map\ShowList{\List{\List{1,2},\List{2,3},\List{5}}}}
 
@@ -278,7 +278,7 @@ ProcCounter = \the\value{ProcCounter}
 \AssertFalse{\ifcsdef{x}}
 \AssertFalse{\ifcsdef{y}}
 
-\ListShow{\Map{\Proc{Fortunately#1}}{\List{1,2,3}}}
+\ShowList{\Map{\Proc{Fortunately#1}}{\List{1,2,3}}}
 
 
 \end{document}

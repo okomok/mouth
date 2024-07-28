@@ -93,8 +93,6 @@
 \newcommand*{\Expand}{\Intercalate{}}
 \newcommand*{\Intercalate}[2]{#2{\Intercalate@{#1}}{}}
 \newcommand*{\Intercalate@}[2]{#2\Foldr{\ExpandIII{#1}}{}}
-\newcommand*{\ListShow}[1]{[\Unlist{#1}]}% no spaces
-\newcommand*{\ListsShow}[1]{\ListShow{\Map\ListShow{#1}}}
 
 \newcommand*{\List}[1]{\List@#1,\Listend@\@eolst}% only works for nonempty lists.
 \newcommand*{\Listend@}{}
@@ -229,8 +227,6 @@
 \newcommand*{\Curry}[3]{#1{\PairCons{#2}{#3}}}
 \newcommand*{\Uncurry}[2]{#1{\Fst{#2}}{\Snd{#2}}}
 \newcommand*{\Swap}[1]{\PairCons{\Snd{#1}}{\Fst{#1}}}
-\newcommand*{\ShowPair}[1]{(\ShowPair@{#1})}
-\newcommand*{\ShowPair@}[1]{\Fst{#1},\Snd{#1}}
 \newcommand*{\PairToList}[1]{\Cons{\Fst{#1}}{\Cons{\Snd{#1}}\Nil}}
 
 
@@ -279,6 +275,14 @@
     \expandafter\let\csname #1\endcsname\@undefined%
 }
 \newcommand*{\Local}[2]{\Foldr\LocalI{#2}{\List{#1}}}
+
+
+% Show
+%
+
+\newcommand*{\ShowPair}[1]{(\Unpair{#1})}
+\newcommand*{\ShowList}[1]{[\Unlist{#1}]}% no spaces
+\newcommand*{\ShowLists}[1]{\ShowList{\Map\ShowList{#1}}}
 
 
 % Misc
