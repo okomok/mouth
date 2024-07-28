@@ -93,7 +93,7 @@
 \newcommand*{\Expand}{\Intercalate{}}
 \newcommand*{\Intercalate}[2]{#2{\Intercalate@{#1}}{}}
 \newcommand*{\Intercalate@}[2]{#2\Foldr{\ExpandIII{#1}}{}}
-\newcommand*{\ListShow}[1]{\{\Unlist{#1}\}}% no spaces
+\newcommand*{\ListShow}[1]{[\Unlist{#1}]}% no spaces
 \newcommand*{\ListsShow}[1]{\ListShow{\Map\ListShow{#1}}}
 
 \newcommand*{\List}[1]{\List@#1,\Listend@\@eolst}% only works for nonempty lists.
@@ -150,7 +150,7 @@
 \newcommand*{\Take@}[3]{\Iftex{\ifnum#3=0 }{\Nil}{\Cons{#1}{#2{\numexpr#3-1}}}}
 \newcommand*{\Drop}[2]{\Foldr\Drop@{\Const\Nil}{#2}{#1}}
 \newcommand*{\Drop@}[3]{\Iftex{\ifnum#3=0 }{\Cons{#1}{#2{0}}}{#2{\numexpr#3-1}}}
-\newcommand*{\SplitAt}[2]{\Pair{\Take{#1}{#2}}{\Drop{#1}{#2}}}
+\newcommand*{\SplitAt}[2]{\PairCons{\Take{#1}{#2}}{\Drop{#1}{#2}}}
 \newcommand*{\TakeWhile}[2]{\Foldr{\TakeWhile@{#1}}\Nil{#2}}
 \newcommand*{\TakeWhile@}[3]{\If{#1{#2}}{\Cons{#2}{#3}}\Nil}
 \newcommand*{\DropWhile}[2]{\Foldr{\DropWhile@{#1}}{\Const\Nil}{#2}\True}
@@ -165,7 +165,7 @@
         \Cons{#2}{#3\False}%
     }%
 }
-\newcommand*{\Span}[2]{\Pair{\TakeWhile{#1}{#2}}{\DropWhile{#1}{#2}}}
+\newcommand*{\Span}[2]{\PairCons{\TakeWhile{#1}{#2}}{\DropWhile{#1}{#2}}}
 \newcommand*{\Break}[1]{\Span{\Compose\Not{#1}}}
 \newcommand*{\Inits}{\Foldr\Inits@{\Singleton\Nil}}
 \newcommand*{\Inits@}[2]{\Cons\Nil{\Map{\Cons{#1}}{#2}}}
@@ -180,11 +180,11 @@
 \newcommand*{\Nth}[2]{\Head{\Drop{#1}{#2}}}
 
 % Zipping and unzipping lists
-\newcommand*{\Zip}{\ZipWith{\Pair}}
+\newcommand*{\Zip}{\ZipWith{\PairCons}}
 \newcommand*{\ZipWith}[1]{\Foldr{\ZipWith@{#1}}{\Const\Nil}}
 \newcommand*{\ZipWith@}[4]{\If{\Null{#4}}{\Nil}{\Cons{#1{#2}{\Head{#4}}}{#3{\Tail{#4}}}}}
-\newcommand*{\Unzip}{\Foldr\Unzip@{\Pair\Nil\Nil}}
-\newcommand*{\Unzip@}[2]{\Pair{\Cons{\Fst{#1}}{\Fst{#2}}}{\Cons{\Snd{#1}}{\Snd{#2}}}}
+\newcommand*{\Unzip}{\Foldr\Unzip@{\PairCons\Nil\Nil}}
+\newcommand*{\Unzip@}[2]{\PairCons{\Cons{\Fst{#1}}{\Fst{#2}}}{\Cons{\Snd{#1}}{\Snd{#2}}}}
 
 % Functions on strings
 % TODO
@@ -220,13 +220,15 @@
 % Pair
 %
 
-\newcommand*{\Pair}[3]{#3{#1}{#2}}
+\newcommand*{\Pair}[1]{\expandafter\Pair@#1@eolst}
+\def\Pair@#1,#2@eolst{\PairCons{#1}{#2}}
+\newcommand*{\Unpair}[1]{\Fst{#1},\Snd{#1}}
+\newcommand*{\PairCons}[3]{#3{#1}{#2}}
 \newcommand*{\Fst}[1]{#1\True}
 \newcommand*{\Snd}[1]{#1\False}
-\newcommand*{\Curry}[3]{#1{\Pair{#2}{#3}}}
+\newcommand*{\Curry}[3]{#1{\PairCons{#2}{#3}}}
 \newcommand*{\Uncurry}[2]{#1{\Fst{#2}}{\Snd{#2}}}
-\newcommand*{\Swap}[1]{\Pair{\Snd{#1}}{\Fst{#1}}}
-\newcommand*{\Unpair@}[1]{\Fst{#1}\Snd{#1}} % impossible to implement?
+\newcommand*{\Swap}[1]{\PairCons{\Snd{#1}}{\Fst{#1}}}
 \newcommand*{\ShowPair}[1]{(\ShowPair@{#1})}
 \newcommand*{\ShowPair@}[1]{\Fst{#1},\Snd{#1}}
 \newcommand*{\PairToList}[1]{\Cons{\Fst{#1}}{\Cons{\Snd{#1}}\Nil}}

@@ -70,7 +70,7 @@ mouth test:
     \Expect*{\Unlist{\List{1,2,3}}}{1,2,3}
     \Expect*{\Unlist{\List{1,2 , 3}}}{1,2 , 3}
     \Expect*{\Unlist{\List{1,2,{,}3}}}{1,2,{,}3}
-    \Expect*{\ListShow{\List{1,2,3}}}{\{1,2,3\}}
+    \Expect*{\ListShow{\List{1,2,3}}}{[1,2,3]}
 % Works. See above. 
     \Expect*{\Unlist{\List{\Unlist{\List{1,2,3}}}}}{1,2,3}
     \Expect*{\Unlist{\List{\Unlist{\List{1,2}}}}}{1,2}
@@ -118,21 +118,22 @@ ProcCounter = \the\value{ProcCounter}
 
 
 \begin{qstest}{Pair}{}
-%    \edef\papa{\Unpair{\Pair{1}{2}}}
     \newcommand*{\uncurryme}[2]{#1#2}
-    \Expect*{\Fst{\Pair{1}{2}}}{1}
-    \Expect*{\Snd{\Pair{1}{2}}}{2}
-    \Expect*{\Snd{\Swap{\Pair{1}{2}}}}{1}
-    \Expect*{\Fst{\Swap{\Pair{1}{2}}}}{2}
-    %\Expect*{\Unpair{\Pair12}}{12}
-%   \Expect*{\Unpair{\Pair{abc}{efg}}}{abcefg}
-%   \Expect*{\Unpair{\Pair{\Unpair{\Pair12}}}}{12}
-%   \Expect*{\Compose\Unpair{\Compose\Pair\Unpair}\Pair12}{12}
-    \Expect*{\Uncurry{\uncurryme}{\Pair{1}{2}}}{12}
- %   \Expect*{\Fst{\expandafter\Pair\papa}}{1}
-%        \Expect*{\Unpair{\Pair{\Unpair{\Pair12}}}}{1,2}
+    \edef\papa{\Unpair{\PairCons12}}
+    \Expect*{\Fst{\PairCons{1}{2}}}{1}
+    \Expect*{\Snd{\PairCons{1}{2}}}{2}
+    \Expect*{\Snd{\Swap{\PairCons{1}{2}}}}{1}
+    \Expect*{\Fst{\Swap{\PairCons{1}{2}}}}{2}
+    \Expect*{\Unpair{\PairCons12}}{1,2}
+    \Expect*{\Unpair{\PairCons{abc}{efg}}}{abc,efg}
+    \Expect*{\Unpair{\Pair{\Unpair{\PairCons12}}}}{1,2}
+    \Expect*{\Compose\Unpair{\Compose\Pair\Unpair}{\PairCons12}}{1,2}
+    \Expect*{\Uncurry{\uncurryme}{\PairCons12}}{12}
+    \Expect*{\Fst{\Pair\papa}}{1}
+    \Expect*{\Unpair{\Pair{\Unpair{\PairCons12}}}}{1,2}
+    \Expect*{\Unpair{\Pair{\Unpair{\Pair{1,2}}}}}{1,2}
 \end{qstest}
-\AssertEquals{\EqualWith\NumEq}{\List{1,2}}{\PairToList{\Pair{1}{2}}}
+\AssertEquals{\EqualWith\NumEq}{\List{1,2}}{\PairToList{\PairCons{1}{2}}}
 
 
 \begin{qstest}{Zip}{}
@@ -195,9 +196,9 @@ ProcCounter = \the\value{ProcCounter}
 
 
 % Unfoldr
-\newcommand*{\FibImpl}[1]{\Just{\Pair{\Fst{#1}}{\Pair{\Snd{#1}}{\NumPlus{\Fst{#1}}{\Snd{#1}}}}}}
-\newcommand*{\Fibs}{\Unfoldr\FibImpl{\Pair{0}{1}}}
-\newcommand*{\MyIterImpl}[2]{\Just{\Pair{#2}{#1{#2}}}}
+\newcommand*{\FibImpl}[1]{\Just{\PairCons{\Fst{#1}}{\PairCons{\Snd{#1}}{\NumPlus{\Fst{#1}}{\Snd{#1}}}}}}
+\newcommand*{\Fibs}{\Unfoldr\FibImpl{\PairCons{0}{1}}}
+\newcommand*{\MyIterImpl}[2]{\Just{\PairCons{#2}{#1{#2}}}}
 \newcommand*{\MyIter}[1]{\Unfoldr{\MyIterImpl{#1}}}
 \AssertEquals{\EqualWith\NumEq}{\List{0,1,1,2,3,5,8,13}}{\Take8\Fibs}
 \AssertEquals{\EqualWith\NumEq}{\List{3,4,5}}{\Take3{\MyIter\NumInc3}}
@@ -260,8 +261,8 @@ ProcCounter = \the\value{ProcCounter}
 \AssertEquals{\EqualWith\NumEq}\Nil{\ScanrI\NumPlus\Nil}
 
 \begin{qstest}{Inits and Tails}{}
-    \Expect*{\ListsShow{\Inits{\List{1,3,5}}}}{\{\{\},\{1\},\{1,3\},\{1,3,5\}\}}
-    \Expect*{\ListsShow{\Tails{\List{1,3,5}}}}{\{\{1,3,5\},\{3,5\},\{5\},\{\}\}}
+    \Expect*{\ListsShow{\Inits{\List{1,3,5}}}}{[[],[1],[1,3],[1,3,5]]}
+    \Expect*{\ListsShow{\Tails{\List{1,3,5}}}}{[[1,3,5],[3,5],[5],[]]}
 \end{qstest}
 %\ShowList{\Map\ShowList{\List{\List{1,2},\List{2,3},\List{5}}}}
 
