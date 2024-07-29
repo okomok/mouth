@@ -89,7 +89,7 @@
 % List
 %   \Null is linear.
 
-\newcommand*{\Unlist}{\Intercalate{,}}% no spaces
+\newcommand*{\Unlist@}{\Intercalate{,}}% no spaces
 \newcommand*{\Expand}{\Intercalate{}}
 \newcommand*{\Intercalate}[2]{#2{\Intercalate@{#1}}{}}
 \newcommand*{\Intercalate@}[2]{#2\Foldr{\ExpandIII{#1}}{}}
@@ -218,9 +218,9 @@
 % Pair
 %
 
-\newcommand*{\Pair}[1]{\expandafter\Pair@#1@eolst}
+\newcommand*{\Pair}[1]{\Pair@#1@eolst}
 \def\Pair@#1,#2@eolst{\PairCons{#1}{#2}}
-\newcommand*{\Unpair}[1]{\Fst{#1},\Snd{#1}}
+\newcommand*{\Unpair@}[1]{\Fst{#1},\Snd{#1}}
 \newcommand*{\PairCons}[3]{#3{#1}{#2}}
 \newcommand*{\Fst}[1]{#1\True}
 \newcommand*{\Snd}[1]{#1\False}
@@ -228,6 +228,7 @@
 \newcommand*{\Uncurry}[2]{#1{\Fst{#2}}{\Snd{#2}}}
 \newcommand*{\Swap}[1]{\PairCons{\Snd{#1}}{\Fst{#1}}}
 \newcommand*{\PairToList}[1]{\Cons{\Fst{#1}}{\Cons{\Snd{#1}}\Nil}}
+\newcommand*{\MapPair}[2]{\PairCons{#1{\Fst{#2}}}{#1{\Snd{#2}}}}
 
 
 % Maybe
@@ -280,8 +281,8 @@
 % Show
 %
 
-\newcommand*{\ShowPair}[1]{(\Unpair{#1})}
-\newcommand*{\ShowList}[1]{[\Unlist{#1}]}% no spaces
+\newcommand*{\ShowPair}[1]{(\Unpair@{#1})}
+\newcommand*{\ShowList}[1]{[\Unlist@{#1}]}% no spaces
 \newcommand*{\ShowLists}[1]{\ShowList{\Map\ShowList{#1}}}
 
 

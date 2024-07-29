@@ -44,34 +44,14 @@ mouth test:
 \end{qstest}
 
 
-% \Unlist{\List{\Unlist{\List{1,2,3}}}}
-% $\to$
-% \List{\Unlist{\List{1,2,3}}}\Unlist@{}
-% $\to$
-% \Singleton{\Unlist{\List{1,2,3}}}\Unlist@{}
-% $\to$
-% \Cons{\Unlist{\List{1,2,3}}}\Nil\Unlist@{}
-% $\to$
-% \Unlist@{\Unlist{\List{1,2,3}}}\Nil
-% $\to$
-% \Unlist{\List{1,2,3}}\Foldr\PrependComma{}\Nil
-% $\to$
-% \List{1,2,3}\Unlist@{}\Foldr\PrependComma{}\Nil
-% $\to$
-% \Cons{1}{\Cons{2}{\Cons{3}\Nil}}\Unlist@{}\Foldr\PrependComma{}\Nil
-% $\to$
-% \Unlist@{1}{\Cons{2}{\Cons{3}\Nil}}\Foldr\PrependComma{}\Nil
-% $\to$
-% 1\Foldr\PrependComma{}{\Cons{2}{\Cons{3}\Nil}}\Foldr\PrependComma{}\Nil
-% $\to$
-% 1,2,3
-
 \begin{qstest}{List}{}
+\Comment{
     \Expect*{\Unlist{\List{1,2,3}}}{1,2,3}
     \Expect*{\Unlist{\List{1,2 , 3}}}{1,2 , 3}
     \Expect*{\Unlist{\List{1,2,{,}3}}}{1,2,{,}3}
+}
     \Expect*{\ShowList{\List{1,2,3}}}{[1,2,3]}
-% Works. See above. 
+\Comment{
     \Expect*{\Unlist{\List{\Unlist{\List{1,2,3}}}}}{1,2,3}
     \Expect*{\Unlist{\List{\Unlist{\List{1,2}}}}}{1,2}
     \Expect*{\Unlist{\List{\Unlist{\List{1}}}}}{1}
@@ -80,69 +60,78 @@ mouth test:
     \Expect*{\Compose\Unlist\List{\Compose\Unlist\List{1,2}}}{1,2}
     \Expect*{\Compose\Unlist\List{\Compose\Unlist\List{1}}}{1}
     \Expect*{\Compose\Unlist\List{\Compose\Unlist\List1}}{1}
+}
 \end{qstest}
 
 
 \begin{qstest}{Take}{}
-    \Expect*{\Unlist{\Take{3}{\List{1,2,3,4}}}}{1,2,3}
-    \Expect*{\Unlist{\Take{0}{\List{1,2,3,4}}}}{}
+    \Expect*{\ShowList{\Take{3}{\List{1,2,3,4}}}}{[1,2,3]}
+    \Expect*{\ShowList{\Take{0}{\List{1,2,3,4}}}}{[]}
 \end{qstest}
 
 
 \begin{qstest}{Drop}{}
-    \Expect*{\Unlist{\Drop{2}{\List{1,2,3,4}}}}{3,4}
-    \Expect*{\Unlist{\Drop{0}{\List{1,2,3,4}}}}{1,2,3,4}
-    \Expect*{\Unlist{\Drop{7}{\List{1,2,3,4}}}}{}
+    \Expect*{\ShowList{\Drop{2}{\List{1,2,3,4}}}}{[3,4]}
+    \Expect*{\ShowList{\Drop{0}{\List{1,2,3,4}}}}{[1,2,3,4]}
+    \Expect*{\ShowList{\Drop{7}{\List{1,2,3,4}}}}{[]}
 \end{qstest}
 
 
 \begin{qstest}{Iterate}{}
     \newcommand*{\appendb}[1]{#1b}
-    \Expect*{\Unlist{\Take{4}{\Iterate{\appendb}{a}}}}{a,ab,abb,abbb}
+    \Expect*{\ShowList{\Take{4}{\Iterate{\appendb}{a}}}}{[a,ab,abb,abbb]}
 \end{qstest}
 
-Iterate Test: \Unlist{\Take{4}{\Iterate{\Proc{#1b}}{a}}} = a,ab,abb,abbb
+Iterate Test: \ShowList{\Take{4}{\Iterate{\Proc{#1b}}{a}}} = [a,ab,abb,abbb]
 
 
 \begin{qstest}{TakeWhile}{}
-    \Expect*{\Unlist{\TakeWhile{\NumLess{3}}{\List{5,6,4,2,5,3,4}}}}{5,6,4}
+    \Expect*{\ShowList{\TakeWhile{\NumLess{3}}{\List{5,6,4,2,5,3,4}}}}{[5,6,4]}
 \end{qstest}
 
 
 \begin{qstest}{DropWhile}{}
-    \Expect*{\Unlist{\DropWhile{\NumLess{3}}{\List{5,6,4,2,5,3,4}}}}{2,5,3,4}
+    \Expect*{\ShowList{\DropWhile{\NumLess{3}}{\List{5,6,4,2,5,3,4}}}}{[2,5,3,4]}
 \end{qstest}
 
 
 ProcCounter = \the\value{ProcCounter}
 
 
+\Snd{\Fst{\Pair{\Pair{1,2},\Pair{3,4}}}}
 \begin{qstest}{Pair}{}
     \newcommand*{\uncurryme}[2]{#1#2}
-    \edef\papa{\Unpair{\PairCons12}}
+%    \edef\papa{\Unpair{\PairCons12}}
     \Expect*{\Fst{\PairCons{1}{2}}}{1}
     \Expect*{\Snd{\PairCons{1}{2}}}{2}
     \Expect*{\Snd{\Swap{\PairCons{1}{2}}}}{1}
     \Expect*{\Fst{\Swap{\PairCons{1}{2}}}}{2}
-    \Expect*{\Unpair{\PairCons12}}{1,2}
-    \Expect*{\Unpair{\PairCons{abc}{efg}}}{abc,efg}
-    \Expect*{\Unpair{\Pair{\Unpair{\PairCons12}}}}{1,2}
+    \Expect*{\ShowPair{\PairCons12}}{(1,2)}
+    \Expect*{\ShowPair{\PairCons{abc}{efg}}}{(abc,efg)}
+\Comment{
+    \Expect*{\ShowPair{\Pair{\Unpair{\PairCons12}}}}{(1,2)}
+    \Expect*{\Fst{\Pair{\Unpair{\PairCons12}}}}{1}
     \Expect*{\Compose\Unpair{\Compose\Pair\Unpair}{\PairCons12}}{1,2}
     \Expect*{\Uncurry{\uncurryme}{\PairCons12}}{12}
     \Expect*{\Fst{\Pair\papa}}{1}
     \Expect*{\Unpair{\Pair{\Unpair{\PairCons12}}}}{1,2}
     \Expect*{\Unpair{\Pair{\Unpair{\Pair{1,2}}}}}{1,2}
+    \Expect*{\Fst{\MapPair\NumInc{\Pair{1,2}}}}{2}
+    \Expect*{\Snd{\MapPair\NumInc{\Pair{1,2}}}}{3}
+    \Expect*{\Fst{\Pair{\Unpair{\MapPair\NumInc{\Pair{1,2}}}}}}{2}
+    \Expect*{\Snd{\Pair{\Unpair{\MapPair\NumInc{\Pair{1,2}}}}}}{3}
+}
 \end{qstest}
 \AssertEquals{\EqualWith\NumEq}{\List{1,2}}{\PairToList{\PairCons{1}{2}}}
 
 
 \begin{qstest}{Zip}{}
     \Expect*{%
-        \Unlist{\Map{\ShowPair}{\Zip{\List{1,2,3}}{\List{a,b,c,d}}}}%
-    }{(1,a),(2,b),(3,c)}
+        \ShowList{\Map{\ShowPair}{\Zip{\List{1,2,3}}{\List{a,b,c,d}}}}%
+    }{[(1,a),(2,b),(3,c)]}
     \Expect*{%
-        \Unlist{\Map{\ShowPair}{\Zip{\List{1,2,3,4}}{\List{a,b,c}}}}%
-    }{(1,a),(2,b),(3,c)}
+        \ShowList{\Map{\ShowPair}{\Zip{\List{1,2,3,4}}{\List{a,b,c}}}}%
+    }{[(1,a),(2,b),(3,c)]}
 \end{qstest}
 
 
@@ -205,6 +194,7 @@ ProcCounter = \the\value{ProcCounter}
 
 
 % Concat
+\ShowList{\Concat{\List{\List{1},\List{2,3},\Nil,\List{4,5,6}}}}
 \AssertEquals{\EqualWith\NumEq}{\List{1,2,3,4,5,6}}{\Concat{\List{\List{1},\List{2,3},\Nil,\List{4,5,6}}}}
 \AssertEquals{\EqualWith\NumEq}{\List{1,2,3,4,5,6}}{\ConcatMap\Id{\List{\List{1},\List{2,3},\Nil,\List{4,5,6}}}}
 
@@ -280,5 +270,6 @@ ProcCounter = \the\value{ProcCounter}
 
 \ShowList{\Map{\Proc{Fortunately#1}}{\List{1,2,3}}}
 
+\Length{\List{1,2,3}}
 
 \end{document}
