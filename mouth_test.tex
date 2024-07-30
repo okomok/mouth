@@ -7,13 +7,16 @@ mouth test:
 
 
 % Assertion
-\AssertEquals\NumEq2{\Assert{\NumEq11}{2}}
+\AssertEquals\Identity\NumEq2{\Assert{\NumEq11}{2}}
 \AssertTrue\True
 \AssertFalse\False
-\AssertEquals\NumEq22
-\AssertNotEquals\NumEq32
-\AssertEquals{\EqualWith\NumEq}{\List{1,2,4}}{\List{1,2,4}}
-\AssertNotEquals{\EqualWith\NumEq}{\List{1,2,4}}{\List{1,2,3}}
+\AssertEquals\Identity\NumEq22
+\AssertNotEquals\Identity\NumEq32
+\AssertEquals{\ShowList}{\EqualWith\NumEq}{\List{1,2,3}}{\List{1,2,3}}
+\AssertNotEquals\ShowList{\EqualWith\NumEq}{\List{1,2,4}}{\List{1,2,3}}
+\AssertSame{A}{A}
+\AssertSame{[1,2,3]}{\ShowList{\List{1,2,3}}}
+\AssertSame{\ShowList{\List{1,2,3}}}{\ShowList{\Append{\List{1}}{\List{2,3}}}}
 
 
 % Bool test
@@ -122,7 +125,7 @@ ProcCounter = \the\value{ProcCounter}
     \Expect*{\Snd{\Pair{\Unpair{\MapPair\NumInc{\Pair{1,2}}}}}}{3}
 }
 \end{qstest}
-\AssertEquals{\EqualWith\NumEq}{\List{1,2}}{\PairToList{\PairCons{1}{2}}}
+\AssertListEquals{\EqualWith\NumEq}{\List{1,2}}{\PairToList{\PairCons{1}{2}}}
 
 
 \begin{qstest}{Zip}{}
@@ -136,13 +139,13 @@ ProcCounter = \the\value{ProcCounter}
 
 
 % Unzip
-\AssertEquals{\EqualWith\NumEq}{\List{1,2,3}}{%
+\AssertListEquals{\EqualWith\NumEq}{\List{1,2,3}}{%
     \Fst{\Unzip{\Zip{\List{1,2,3,4}}{\List{a,b,c}}}}%
 }
 
 
 % Init
-\AssertEquals{\EqualWith\NumEq}{\List{1,2}}{\Init{\List{1,2,3}}}
+\AssertListEquals{\EqualWith\NumEq}{\List{1,2}}{\Init{\List{1,2,3}}}
 
 
 \begin{qstest}{Nth}{}
@@ -166,15 +169,15 @@ ProcCounter = \the\value{ProcCounter}
 % EqualWith
 \newcommand*{\alwaystrue}[2]{\True}
 \newcommand*{\alwaysfalse}[2]{\False}
-\AssertEquals{\EqualWith\NumEq}{\List{1,2,3}}{\List{1,2,3}}
-\AssertEquals{\EqualWith\alwaystrue}\Nil\Nil
-\AssertEquals{\EqualWith\alwaysfalse}\Nil\Nil
-\AssertNotEquals{\EqualWith\NumEq}{\List{1,2}}{\List{1,2,3}}
-\AssertNotEquals{\EqualWith\NumEq}{\List{1,2}}{\List{1,2,3}}
-\AssertNotEquals{\EqualWith\NumEq}{\List{1,2,3}}{\List{1,2}}
-\AssertNotEquals{\EqualWith\NumEq}{\Nil}{\List{1,2}}
-\AssertNotEquals{\EqualWith\NumEq}{\List{1,2,3}}{\Nil}
-\AssertNotEquals{\EqualWith\NumEq}{\List{1,2,3}}{\List{1,2,2}}
+\AssertListEquals{\EqualWith\NumEq}{\List{1,2,3}}{\List{1,2,3}}
+\AssertListEquals{\EqualWith\alwaystrue}\Nil\Nil
+\AssertListEquals{\EqualWith\alwaysfalse}\Nil\Nil
+\AssertListNotEquals{\EqualWith\NumEq}{\List{1,2}}{\List{1,2,3}}
+\AssertListNotEquals{\EqualWith\NumEq}{\List{1,2}}{\List{1,2,3}}
+\AssertListNotEquals{\EqualWith\NumEq}{\List{1,2,3}}{\List{1,2}}
+\AssertListNotEquals{\EqualWith\NumEq}{\Nil}{\List{1,2}}
+\AssertListNotEquals{\EqualWith\NumEq}{\List{1,2,3}}{\Nil}
+\AssertListNotEquals{\EqualWith\NumEq}{\List{1,2,3}}{\List{1,2,2}}
 
 
 % Foreach
@@ -189,14 +192,14 @@ ProcCounter = \the\value{ProcCounter}
 \newcommand*{\Fibs}{\Unfoldr\FibImpl{\PairCons{0}{1}}}
 \newcommand*{\MyIterImpl}[2]{\Just{\PairCons{#2}{#1{#2}}}}
 \newcommand*{\MyIter}[1]{\Unfoldr{\MyIterImpl{#1}}}
-\AssertEquals{\EqualWith\NumEq}{\List{0,1,1,2,3,5,8,13}}{\Take8\Fibs}
-\AssertEquals{\EqualWith\NumEq}{\List{3,4,5}}{\Take3{\MyIter\NumInc3}}
+\AssertListEquals{\EqualWith\NumEq}{\List{0,1,1,2,3,5,8,13}}{\Take8\Fibs}
+\AssertListEquals{\EqualWith\NumEq}{\List{3,4,5}}{\Take3{\MyIter\NumInc3}}
 
 
 % Concat
 \ShowList{\Concat{\List{\List{1},\List{2,3},\Nil,\List{4,5,6}}}}
-\AssertEquals{\EqualWith\NumEq}{\List{1,2,3,4,5,6}}{\Concat{\List{\List{1},\List{2,3},\Nil,\List{4,5,6}}}}
-\AssertEquals{\EqualWith\NumEq}{\List{1,2,3,4,5,6}}{\ConcatMap\Id{\List{\List{1},\List{2,3},\Nil,\List{4,5,6}}}}
+\AssertListEquals{\EqualWith\NumEq}{\List{1,2,3,4,5,6}}{\Concat{\List{\List{1},\List{2,3},\Nil,\List{4,5,6}}}}
+\AssertListEquals{\EqualWith\NumEq}{\List{1,2,3,4,5,6}}{\ConcatMap\Id{\List{\List{1},\List{2,3},\Nil,\List{4,5,6}}}}
 
 
 % Maybe
@@ -210,8 +213,8 @@ ProcCounter = \the\value{ProcCounter}
 \AssertFalse{\IsNothing{\Just{3}}}
 \AssertTrue{\IsNothing{\Nothing}}
 \AssertTrue{\IsNothing{\ListToMaybe\Nil}}
-\AssertEquals{\EqualWith\NumEq}{\List{3}}{\MaybeToList{\Just{3}}}
-\AssertEquals{\EqualWith\NumEq}\Nil{\MaybeToList{\Nothing}}
+\AssertListEquals{\EqualWith\NumEq}{\List{3}}{\MaybeToList{\Just{3}}}
+\AssertListEquals{\EqualWith\NumEq}\Nil{\MaybeToList{\Nothing}}
 %\FromJust\Nothing
 
 
@@ -244,11 +247,11 @@ ProcCounter = \the\value{ProcCounter}
 \end{qstest}
 
 % Scanl/r
-\AssertEquals{\EqualWith\NumEq}\Nil{\ScanlI\NumPlus\Nil}
-\AssertEquals{\EqualWith\NumEq}{\List{1,3,6,10}}{\ScanlI\NumPlus{\List{1,2,3,4}}}
-\AssertEquals{\EqualWith\NumEq}{\List{15,14,12,9,5}}{\Scanr\NumPlus{5}{\List{1,2,3,4}}}
-\AssertEquals{\EqualWith\NumEq}{\List{10,9,7,4}}{\ScanrI\NumPlus{\List{1,2,3,4}}}
-\AssertEquals{\EqualWith\NumEq}\Nil{\ScanrI\NumPlus\Nil}
+\AssertListEquals{\EqualWith\NumEq}\Nil{\ScanlI\NumPlus\Nil}
+\AssertListEquals{\EqualWith\NumEq}{\List{1,3,6,10}}{\ScanlI\NumPlus{\List{1,2,3,4}}}
+\AssertListEquals{\EqualWith\NumEq}{\List{15,14,12,9,5}}{\Scanr\NumPlus{5}{\List{1,2,3,4}}}
+\AssertListEquals{\EqualWith\NumEq}{\List{10,9,7,4}}{\ScanrI\NumPlus{\List{1,2,3,4}}}
+\AssertListEquals{\EqualWith\NumEq}\Nil{\ScanrI\NumPlus\Nil}
 
 \begin{qstest}{Inits and Tails}{}
     \Expect*{\ShowLists{\Inits{\List{1,3,5}}}}{[[],[1],[1,3],[1,3,5]]}

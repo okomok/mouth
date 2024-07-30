@@ -74,14 +74,32 @@
 \newcommand*{\AssertTrue}[1]{\If{#1}{}{\errmessage{assertion failed: Expected \unexpanded{#1} to be true, but wasn't}}}
 \newcommand*{\AssertFalse}[1]{\If{#1}{\errmessage{assertion failed: Expected \unexpanded{#1} to be false, but wasn't}}{}}
 
-\newcommand*{\AssertEquals}[3]{%
-    \If{#1{#2}{#3}}{}{%
-        \errmessage{assertion failed: Expected \unexpanded{#3} to be \unexpanded{#2}, but wasn't}%
+\newcommand*{\AssertEquals}[4]{%
+    \If{#2{#3}{#4}}{}{%
+        \errmessage{assertion failed: Expected \unexpanded{#4} to be #1{#3}, but was #1{#4}}%
     }%
 }
-\newcommand*{\AssertNotEquals}[3]{%
-    \If{#1{#2}{#3}}{%
-        \errmessage{assertion failed: Expected \unexpanded{#3} to be \unexpanded{#2}, but wasn't}%
+\newcommand*{\AssertNotEquals}[4]{%
+    \If{#2{#3}{#4}}{%
+        \errmessage{assertion failed: Expected \unexpanded{#4} not to be #1{#3}, but was #1{#4}}%
+    }{}%
+}
+
+\newcommand*{\AssertListEquals}{\AssertEquals\ShowList}
+\newcommand*{\AssertListNotEquals}{\AssertNotEquals\ShowList}
+
+\newcommand*{\AssertSame}[2]{%
+    \edef\AssertSameExpected@{#1}%
+    \edef\AssertSameActual@{#2}%
+    \Iftex{\ifx\AssertSameExpected@\AssertSameActual@}{}{%
+        \errmessage{assertion failed: Expected \unexpanded{#2} expanded to #1, but was #2}%
+    }%
+}
+\newcommand*{\AssertNotSame}[2]{%
+    \edef\AssertNotSameExpected@{#1}%
+    \edef\AssertNotSameActual@{#2}%
+    \Iftex{\ifx\AssertNotSameExpected@\AssertNotSameActual@}{%
+        \errmessage{assertion failed: Expected \unexpanded{#2} not expanded to be #1, but was #2}%
     }{}%
 }
 
