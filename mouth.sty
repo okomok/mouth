@@ -71,8 +71,16 @@
 % Test
 %
 
-\newcommand*{\AssertTrue}[1]{\If{#1}{}{\errmessage{assertion failed: Expected \unexpanded{#1} to be true, but wasn't}}}
-\newcommand*{\AssertFalse}[1]{\If{#1}{\errmessage{assertion failed: Expected \unexpanded{#1} to be false, but wasn't}}{}}
+\newcommand*{\AssertTrue}[1]{%
+    \If{#1}{}{%
+        \errmessage{assertion failed: Expected \unexpanded{#1} to be true, but wasn't}%
+    }%
+}
+\newcommand*{\AssertFalse}[1]{%
+    \If{#1}{%
+        \errmessage{assertion failed: Expected \unexpanded{#1} to be false, but wasn't}%
+    }{}%
+}
 
 \newcommand*{\AssertEquals}[4]{%
     \If{#2{#3}{#4}}{}{%
@@ -89,16 +97,16 @@
 \newcommand*{\AssertListNotEquals}{\AssertNotEquals\ShowList}
 
 \newcommand*{\AssertSame}[2]{%
-    \edef\AssertSameExpected@{#1}%
-    \edef\AssertSameActual@{#2}%
-    \Iftex{\ifx\AssertSameExpected@\AssertSameActual@}{}{%
+    \edef\AssertSame@Expected{#1}%
+    \edef\AssertSame@Actual{#2}%
+    \Iftex{\ifx\AssertSame@Expected\AssertSame@Actual}{}{%
         \errmessage{assertion failed: Expected \unexpanded{#2} expanded to #1, but was #2}%
     }%
 }
 \newcommand*{\AssertNotSame}[2]{%
-    \edef\AssertNotSameExpected@{#1}%
-    \edef\AssertNotSameActual@{#2}%
-    \Iftex{\ifx\AssertNotSameExpected@\AssertNotSameActual@}{%
+    \edef\AssertNotSame@Expected{#1}%
+    \edef\AssertNotSame@Actual{#2}%
+    \Iftex{\ifx\AssertNotSame@Expected\AssertNotSame@Actual}{%
         \errmessage{assertion failed: Expected \unexpanded{#2} not expanded to be #1, but was #2}%
     }{}%
 }
@@ -112,10 +120,10 @@
 \newcommand*{\Intercalate}[2]{#2{\Intercalate@{#1}}{}}
 \newcommand*{\Intercalate@}[2]{#2\Foldr{\ExpandIII{#1}}{}}
 
-\newcommand*{\List}[1]{\List@#1,\Listend@\@eolst}% only works for nonempty lists.
-\newcommand*{\Listend@}{}
+\newcommand*{\List}[1]{\List@#1,\List@end\@eolst}% only works for nonempty lists.
+\newcommand*{\List@end}{}
 \def\List@#1,#2\@eolst{%
-    \Iftex{\ifx\Listend@#2}{\Singleton{#1}}{\Cons{#1}{\List@#2\@eolst}}%
+    \Iftex{\ifx\List@end#2}{\Singleton{#1}}{\Cons{#1}{\List@#2\@eolst}}%
 }
 \newcommand*{\ListThen}[1]{\Compose{#1}\List}
 
@@ -268,9 +276,9 @@
 \newcounter{ProcCounter}
 \newcommand*{\Proc}{%
     \stepcounter{ProcCounter}%
-    \ProcNamed@{Proc\the\value{ProcCounter}}%
+    \Proc@Named{Proc\the\value{ProcCounter}}%
 }
-\newcommand*{\ProcNamed@}[2]{%
+\newcommand*{\Proc@Named}[2]{%
     \expandafter\newcommand\csname #1\endcsname[1]{#2}\csuse{#1}%
 }
 
