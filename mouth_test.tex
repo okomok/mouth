@@ -7,11 +7,11 @@ mouth test:
 
 
 % Assertion
-\AssertEquals\Identity\NumEq2{\Assert{\NumEq11}{2}}
+\AssertEquals\Id\NumEq2{\Assert{\NumEq11}{2}}
 \AssertTrue\True
 \AssertFalse\False
-\AssertEquals\Identity\NumEq22
-\AssertNotEquals\Identity\NumEq32
+\AssertEquals\Id\NumEq22
+\AssertNotEquals\Id\NumEq32
 \AssertEquals{\ShowList}{\EqualWith\NumEq}{\List{1,2,3}}{\List{1,2,3}}
 \AssertNotEquals\ShowList{\EqualWith\NumEq}{\List{1,2,4}}{\List{1,2,3}}
 \AssertSame{A}{A}
@@ -22,14 +22,14 @@ mouth test:
 % Bool test
 \AssertFalse{\Not\True}
 \AssertTrue{\Not\False}
-\AssertTrue{\Bool{\iftrue}}
-\AssertTrue{\Bool{\ifx\Identity\Identity}}
-\AssertFalse{\Bool{\ifx\Compose\Identity}}
-\AssertTrue{\Bool{\ifnum 3 < 4 }}
-\AssertFalse{\Bool{\ifnum 5 < 4 }}
+\AssertTrue{\TeXif{\iftrue}}
+\AssertTrue{\TeXif{\ifx\Id\Id}}
+\AssertFalse{\TeXif{\ifx\Compose\Id}}
+\AssertTrue{\TeXif{\ifnum 3 < 4 }}
+\AssertFalse{\TeXif{\ifnum 5 < 4 }}
 \AssertTrue{\Head{\Cons{\True}{\Nil}}}
-\AssertTrue{\Bool{\ifnum 3 = \Head{\List{3,2,1}} }}
-\AssertFalse{\Bool{\ifnum 2 = \Head{\List{3,2,1}} }}
+\AssertTrue{\TeXif{\ifnum 3 = \Head{\List{3,2,1}} }}
+\AssertFalse{\TeXif{\ifnum 2 = \Head{\List{3,2,1}} }}
 \AssertTrue{ \BoolAnd{\NumLess{3}{9}}{\True} }
 \AssertTrue{ \BoolOr{\True}{\True} }
 \AssertTrue{ \BoolOr{\False}{\True} }
@@ -235,7 +235,7 @@ ProcCounter = \the\value{ProcCounter}
 \end{qstest}
 
 \newcommand*{\FixImpl}[2]{%
-    \If{\BoolOr{\Bool{\ifnum#2=0 }}{\Bool{\ifnum#2=1 }}}{%
+    \If{\BoolOr{\TeXif{\ifnum#2=0 }}{\TeXif{\ifnum#2=1 }}}{%
         1%
     }{%
         \NumPlus{#1{\NumMinus{#2}{1}}}{#1{\NumMinus{#2}{2}}}%

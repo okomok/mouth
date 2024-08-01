@@ -38,9 +38,7 @@
 % Bool
 %
 
-\newcommand*{\Bool}{\TeXif}
-\newcommand*{\If}{\Identity}
-\newcommand*{\Iftex}{\TeXif}
+\newcommand*{\If}{\Id}
 \newcommand*{\BoolToNum}[1]{\If{#1}{1}{0}}
 \newcommand*{\NumToBool}[1]{\If{\NumEq{#1}{0}}\False\True}
 
@@ -54,9 +52,9 @@
 \newcommand*{\Apply}[2]{#1{#2}}
 \newcommand*{\Then}{\Flip\Compose}
 \newcommand*{\Fix}[1]{#1{\Fix{#1}}}
-\newcommand*{\ListCompose}[1]{\Foldr\Compose\Identity{#1}}
+\newcommand*{\ListCompose}[1]{\Foldr\Compose\Id{#1}}
 \newcommand*{\ComposeList}{\Compose\ListCompose\List}
-\newcommand*{\ThenList}[1]{\Foldr\Then\Identity{\List{#1}}}
+\newcommand*{\ThenList}[1]{\Foldr\Then\Id{\List{#1}}}
 \newcommand*{\Times}[2]{\ListCompose{\Replicate{#1}{#2}}}
 
 
@@ -99,15 +97,15 @@
 \newcommand*{\AssertSame}[2]{%
     \edef\AssertSame@Expected{#1}%
     \edef\AssertSame@Actual{#2}%
-    \Iftex{\ifx\AssertSame@Expected\AssertSame@Actual}{}{%
-        \errmessage{assertion failed: Expected \unexpanded{#2} expanded to #1, but was #2}%
+    \TeXif{\ifx\AssertSame@Expected\AssertSame@Actual}{}{%
+        \errmessage{assertion failed: Expected \unexpanded{#2} to be #1, but was #2}%
     }%
 }
 \newcommand*{\AssertNotSame}[2]{%
     \edef\AssertNotSame@Expected{#1}%
     \edef\AssertNotSame@Actual{#2}%
-    \Iftex{\ifx\AssertNotSame@Expected\AssertNotSame@Actual}{%
-        \errmessage{assertion failed: Expected \unexpanded{#2} not expanded to be #1, but was #2}%
+    \TeXif{\ifx\AssertNotSame@Expected\AssertNotSame@Actual}{%
+        \errmessage{assertion failed: Expected \unexpanded{#2} not to be #1, but was #2}%
     }{}%
 }
 
@@ -123,7 +121,7 @@
 \newcommand*{\List}[1]{\List@#1,\List@end\@eolst}% only works for nonempty lists.
 \newcommand*{\List@end}{}
 \def\List@#1,#2\@eolst{%
-    \Iftex{\ifx\List@end#2}{\Singleton{#1}}{\Cons{#1}{\List@#2\@eolst}}%
+    \TeXif{\ifx\List@end#2}{\Singleton{#1}}{\Cons{#1}{\List@#2\@eolst}}%
 }
 \newcommand*{\ListThen}[1]{\Compose{#1}\List}
 
@@ -171,9 +169,9 @@
 
 % Sublists
 \newcommand*{\Take}[2]{\Foldr\Take@{\Const\Nil}{#2}{#1}}
-\newcommand*{\Take@}[3]{\Iftex{\ifnum#3=0 }{\Nil}{\Cons{#1}{#2{\numexpr#3-1}}}}
+\newcommand*{\Take@}[3]{\TeXif{\ifnum#3=0 }{\Nil}{\Cons{#1}{#2{\numexpr#3-1}}}}
 \newcommand*{\Drop}[2]{\Foldr\Drop@{\Const\Nil}{#2}{#1}}
-\newcommand*{\Drop@}[3]{\Iftex{\ifnum#3=0 }{\Cons{#1}{#2{0}}}{#2{\numexpr#3-1}}}
+\newcommand*{\Drop@}[3]{\TeXif{\ifnum#3=0 }{\Cons{#1}{#2{0}}}{#2{\numexpr#3-1}}}
 \newcommand*{\SplitAt}[2]{\PairCons{\Take{#1}{#2}}{\Drop{#1}{#2}}}
 \newcommand*{\TakeWhile}[2]{\Foldr{\TakeWhile@{#1}}\Nil{#2}}
 \newcommand*{\TakeWhile@}[3]{\If{#1{#2}}{\Cons{#2}{#3}}\Nil}
@@ -448,9 +446,9 @@
 \newcommand*{\NumMinus}[2]{\ApplyNTimesII{#2}{\NumDec}{#1}}
 \newcommand*{\NumMult}[2]{\ApplyNTimesII{#2}{\NumPlus{#1}}{0}}
 \newcommand*{\NumLess}{\Lessthan}
-\newcommand*{\NumGtr}[2]{\Iftex{\ifnum#1>#2 }}
-\newcommand*{\NumEq}[2]{\Iftex{\ifnum#1=#2 }}
-\newcommand*{\DimEq}[2]{\Iftex{\ifdim#1=#2 }}
+\newcommand*{\NumGtr}[2]{\TeXif{\ifnum#1>#2 }}
+\newcommand*{\NumEq}[2]{\TeXif{\ifnum#1=#2 }}
+\newcommand*{\DimEq}[2]{\TeXif{\ifdim#1=#2 }}
 
 \newcommand*{\ApplyNTimesI}[3]{\Nth{#1}{\Iterate{#2}{#3}}}
 \newcommand*{\ApplyNTimesII}[3]{%
