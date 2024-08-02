@@ -186,6 +186,14 @@ ProcCounter = \the\value{ProcCounter}
 \end{qstest}
 \Foreach{\List{1,2,3}}{#1} = 123
 
+\EnvList{equation*,aligned}{%
+    \Foreach{\CountRange{1}{9}}{%
+        \Foreach{\CountRange{1}{4}}{% more than 4 makes your PC hang.
+            #1 \times ##1 &= \NumMult{#1}{##1}\\%
+        }
+    }
+}
+
 
 % Unfoldr
 \newcommand*{\FibImpl}[1]{\Just{\PairCons{\Fst{#1}}{\PairCons{\Snd{#1}}{\NumPlus{\Fst{#1}}{\Snd{#1}}}}}}
